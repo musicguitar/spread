@@ -58,6 +58,7 @@ type Backend struct {
 
 	// Only for qemu so far.
 	Memory Size
+	Uefi   bool
 
 	Systems SystemsMap
 

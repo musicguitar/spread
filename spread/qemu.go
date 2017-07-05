@@ -107,6 +107,9 @@ func (p *qemuProvider) Allocate(ctx context.Context, system *System) (Server, er
 	monitor := fmt.Sprintf("telnet:127.0.0.1:%d,server,nowait", port+200)
 	fwd := fmt.Sprintf("user,hostfwd=tcp:127.0.0.1:%d-:22", port)
 	cmd := exec.Command("kvm", "-snapshot", "-m", strconv.Itoa(mem), "-net", "nic", "-net", fwd, "-serial", serial, "-monitor", monitor, path)
+	if p.backend.Uefi == true {
+		cmd.Args = append([]string{cmd.Args[0], "-bios", "/usr/share/ovmf/OVMF.fd"}, cmd.Args[1:]...)
+	}
 	if os.Getenv("SPREAD_QEMU_GUI") != "1" {
 		cmd.Args = append([]string{cmd.Args[0], "-nographic"}, cmd.Args[1:]...)
 	}
